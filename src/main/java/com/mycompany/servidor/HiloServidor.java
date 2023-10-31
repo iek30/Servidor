@@ -3,29 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.servidor;;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.net.Socket;
-import java.util.ArrayList;
+import java.util.stream.Collectors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.io.InputStream;
 import java.io.IOException;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -61,6 +41,7 @@ public class HiloServidor extends Thread{
                 for (int i = 0; i < clientes.size(); i++) {
                     if (clientes.get(i).equals(socket)) {
                         coordenadas.set(i, Integer.parseInt(mensaje));
+                        enviarMensajeATodos();
                     }
                 }
                 
@@ -69,6 +50,15 @@ public class HiloServidor extends Thread{
             }
         }
         
+    }
+    
+    private void enviarMensajeATodos() throws IOException {
+        
+        String coordenadasStr = String.join(",", coordenadas.stream().map(Object::toString).collect(Collectors.toList()));
+        for (Socket cliente : clientes) {
+            output = new DataOutputStream(cliente.getOutputStream());
+            output.writeUTF(coordenadasStr);
+        }
     }
     
 }

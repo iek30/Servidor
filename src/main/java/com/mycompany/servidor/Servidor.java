@@ -25,8 +25,9 @@ public class Servidor {
             
             while (clientes.size() <= MAX_CLIENTES) {                
                 Socket cliente = server.accept();
+                System.out.println("Cliente conectado");
                 clientes.add(cliente);
-                coordenadas.add(200);//Mitadad pantalla.
+                coordenadas.add(170);//Mitadad pantalla.
                 HiloServidor hs = new HiloServidor(cliente,clientes,coordenadas);
                 hs.start();
             }
