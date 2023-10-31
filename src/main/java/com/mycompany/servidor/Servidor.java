@@ -4,10 +4,11 @@
 
 package com.mycompany.servidor;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
+import javax.swing.JFrame;
 
 /**
  *
@@ -18,21 +19,31 @@ public class Servidor {
     public static void main(String[] args) throws IOException {
         
         final Integer MAX_CLIENTES = 4;
-        ArrayList<Socket> clientes = new ArrayList<>();
-        ArrayList<Integer> coordenadas = new ArrayList<>();
+        final int mitadPantalla = (java.awt.Toolkit.getDefaultToolkit().getScreenSize().width/2)-150;
         
-        try(ServerSocket server = new ServerSocket(90)){
+        Socket[] clientes = {null, null, null, null};
+        Integer[] coordenadas = {mitadPantalla, mitadPantalla, mitadPantalla, mitadPantalla};
+        
+        try(ServerSocket server = new ServerSocket(90);)
+            {
             
-            while (clientes.size() <= MAX_CLIENTES) {                
-                Socket cliente = server.accept();
-                System.out.println("Cliente conectado");
-                clientes.add(cliente);
-                coordenadas.add(170);//Mitadad pantalla.
-                HiloServidor hs = new HiloServidor(cliente,clientes,coordenadas);
-                hs.start();
+            while (true) {
+                for (int i = 0; i < clientes.length; i++) {
+                    if(clientes[i]==null) {
+                        clientes[i] = server.accept();    
+                        System.out.println("Cliente conectado");
+                        coordenadas[i] = mitadPantalla ;//Mitad pantalla.
+                        HiloServidor hs = new HiloServidor(clientes[i],clientes,coordenadas);
+                        hs.start();
+                    }
+                }
+                    
+                    
+                    
+                }
+                
             }
             
-        }
         catch(Exception e){
             System.out.println("Se ha liado.");
         }
