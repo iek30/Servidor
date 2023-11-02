@@ -21,7 +21,8 @@ public class HiloServidor extends Thread{
     private DataOutputStream output;
     private Socket[] clientes;
     private Integer[] coordenadasPuntos;
-    final int mitadPantalla = (java.awt.Toolkit.getDefaultToolkit().getScreenSize().width/2)-150;
+    final int TAMANO_IMG = 300;
+    final int MITAD_PANTALLA = (java.awt.Toolkit.getDefaultToolkit().getScreenSize().width/2)-(TAMANO_IMG/2);
 
     public HiloServidor(Socket cliente, Socket[] clientes, Integer[] coordenadasPuntos) throws IOException {
         this.socket = cliente;
@@ -41,13 +42,13 @@ public class HiloServidor extends Thread{
                 
                 int coordenadaMeta = 0;
                 
-                for (int i = clientes.length; i < coordenadasPuntos.length; i++) {
+                for (int i = clientes.length; i < coordenadasPuntos.length-1; i++) {
                     
                     cont += coordenadasPuntos[i];
                     
                 }
                 
-                if(cont%2==0) coordenadaMeta = 1610;
+                if(cont%2==0) coordenadaMeta = (((java.awt.Toolkit.getDefaultToolkit().getScreenSize().width)-TAMANO_IMG)-10);
                 
                 else coordenadaMeta = 10;
                 
@@ -72,7 +73,7 @@ public class HiloServidor extends Thread{
                         if (clientes[i].equals(socket)) {
 
                             clientes[i] = null;
-                            coordenadasPuntos[i] = mitadPantalla;
+                            coordenadasPuntos[i] = MITAD_PANTALLA;
                             coordenadasPuntos[i+(clientes.length)]=0;
                         }
                     }
