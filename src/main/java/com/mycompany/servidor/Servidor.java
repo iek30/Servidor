@@ -22,7 +22,7 @@ public class Servidor {
         final int mitadPantalla = (java.awt.Toolkit.getDefaultToolkit().getScreenSize().width/2)-150;
         
         Socket[] clientes = {null, null, null, null};
-        Integer[] coordenadas = {mitadPantalla, mitadPantalla, mitadPantalla, mitadPantalla};
+        Integer[] coordenadasPuntos = {mitadPantalla, mitadPantalla, mitadPantalla, mitadPantalla, 0, 0, 0, 0};
         
         try(ServerSocket server = new ServerSocket(90);)
             {
@@ -32,8 +32,8 @@ public class Servidor {
                     if(clientes[i]==null) {
                         clientes[i] = server.accept();    
                         System.out.println("Cliente conectado");
-                        coordenadas[i] = mitadPantalla ;//Mitad pantalla.
-                        HiloServidor hs = new HiloServidor(clientes[i],clientes,coordenadas);
+                        coordenadasPuntos[i] = mitadPantalla ;//Mitad pantalla.
+                        HiloServidor hs = new HiloServidor(clientes[i],clientes,coordenadasPuntos);
                         hs.start();
                     }
                 }

@@ -20,15 +20,15 @@ public class HiloServidor extends Thread{
     private DataInputStream input;
     private DataOutputStream output;
     private Socket[] clientes;
-    private Integer[] coordenadas;
+    private Integer[] coordenadasPuntos;
     final int mitadPantalla = (java.awt.Toolkit.getDefaultToolkit().getScreenSize().width/2)-150;
 
-    public HiloServidor(Socket cliente, Socket[] clientes, Integer[] coordenadas) throws IOException {
+    public HiloServidor(Socket cliente, Socket[] clientes, Integer[] coordenadasPuntos) throws IOException {
         this.socket = cliente;
         this.input = new DataInputStream(socket.getInputStream());
         this.output = new DataOutputStream(socket.getOutputStream());
         this.clientes = clientes;
-        this.coordenadas = coordenadas;
+        this.coordenadasPuntos = coordenadasPuntos;
     }
     
     public void run(){
@@ -37,10 +37,27 @@ public class HiloServidor extends Thread{
             try {
                 String mensaje = input.readUTF();
                 
+                int cont = 0;
+                
+                int coordenadaMeta = 0;
+                
+                for (int i = clientes.length; i < coordenadasPuntos.length; i++) {
+                    
+                    cont += coordenadasPuntos[i];
+                    
+                }
+                
+                if(cont%2==0) coordenadaMeta = 1610;
+                
+                else coordenadaMeta = 10;
+                
                 for (int i = 0; i < clientes.length; i++) {
                     if(clientes[i]!=null) {
                         if (clientes[i].equals(socket)) {
-                        coordenadas[i] = Integer.parseInt(mensaje);
+                        coordenadasPuntos[i] = Integer.parseInt(mensaje);
+                        
+                        if(Integer.parseInt(mensaje)==coordenadaMeta) coordenadasPuntos[i+(clientes.length)]++;
+                        
                         enviarMensajeATodos();
                         }
                     }
@@ -55,8 +72,8 @@ public class HiloServidor extends Thread{
                         if (clientes[i].equals(socket)) {
 
                             clientes[i] = null;
-                            coordenadas[i] = mitadPantalla;
-
+                            coordenadasPuntos[i] = mitadPantalla;
+                            coordenadasPuntos[i+(clientes.length)]=0;
                         }
                     }
                     
@@ -71,7 +88,7 @@ public class HiloServidor extends Thread{
     private void enviarMensajeATodos() throws IOException {
         
         StringBuilder coordenadasStrBuilder = new StringBuilder();
-        for (Integer coordenada : coordenadas) {
+        for (Integer coordenada : coordenadasPuntos) {
             coordenadasStrBuilder.append(coordenada);
             coordenadasStrBuilder.append(",");
         }
